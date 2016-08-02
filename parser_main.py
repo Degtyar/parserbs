@@ -33,7 +33,7 @@ if __name__ == '__main__':
     max = 10
     t_sum = namespace.t_sum
     t_col = namespace.t_col
-    t_sum = 300
+    t_sum = 0
     t_sort = namespace.t_sort
     t_sort = 0
 
@@ -109,11 +109,55 @@ err_t = result_namber['err_t']
 count_sovp = result_namber['count_sovp']
 
 
-html_wr = 0
+html_wr = '''<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <link rel="stylesheet"
+  		type="text/css"
+  		href="css/style.css">
+  		<style>
+  		table.new{
+                    	width: 900px;
+                    	height: 200px;
+                    	margin-left:auto;
+                        margin-right:auto;
 
+                    }
+                    table.in{
+                    	width: 350px;
+                    	height: 100px;
+
+
+                    }
+                    table.cont{
+                    	width: 250px;
+                    	height: 300px;
+                    }
+                    td.col1{
+                    	width: 150px;
+                    }
+                    td.tab {
+                    text-align: center;
+                    padding: 0px 0px 0px 115px;
+
+                    }
+                    td{
+                    text-align: center;
+                    }
+  		</style>
+  </head>
+<body>
+
+'''
+fw.write(html_wr)
+
+html_wrin = '<table class="new"  border="3">'
+html_wrou = '</table>'
 
 print('----Обработано %d строк / в выборку попало %d ошибок при обработке %d ----' % (count_coll, count_sovp, err))
 sorted_total_count = (sorted(namber_total.items(), key=l, reverse=True))
+
 
 for tel in sorted_total_count:
     rez = namber[tel[0]]
@@ -128,24 +172,28 @@ for tel in sorted_total_count:
     total = namber_total[tel[0]]
     middle_t = round(total[1] / total[0], 1)
     z = (sorted(rez.items(), key=l, reverse=True))
-    wr = '\n \n \t %s внутренний номер = %s %s %s \n \t всего вызовов = %d  на мин = %d средняя продолжительность вызова = %s мин \n ' % (
+    wr = '<table class="new"  border="3" width="500"><tr>'
+    wr += '\n \n <tr> <td colspan="3">\t %s внутренний номер = %s %s %s </td> </tr>\n  <td colspan="3">\t всего вызовов = %d  на мин = %d средняя продолжительность вызова = %s мин </td> </tr>\n' % (
     tel[0], total[2], name_tel, name_tel_av, total[0], total[1], middle_t)
-    if mm: wr += '\t за месяц %s \n' % month[mm - 1]
-    if t_col: wr += '\t фильтр - номера телефонов на которые взонили %d раз и более \n' % t_col
-    if t_sum: wr += '\t фильтр - номера телефонов с котормыми говорили %d мин и более\n' % t_sum
-    if max: wr += '\t фильтр - ТОП %d вызовов \n' % max
+    if mm: wr += '<tr><td colspan="3">\t за месяц %s </td>\n' % month[mm - 1]
+    if t_col: wr += '<tr><td colspan="3">\t фильтр - номера телефонов на которые взонили %d раз и более </td> </tr>\n' % t_col
+    if t_sum: wr += '<tr><td colspan="3">\t фильтр - номера телефонов с котормыми говорили %d мин и более </td> </tr>\n' % t_sum
+    if max: wr += '<tr><td colspan="3">\t фильтр - ТОП %d вызовов </td></tr> \n' % max
     count_loop = 1
     for y in z:
-        if max and count_loop > max: break
+        if max and count_loop > max:
+            break
         if y[1][0] > t_col and y[1][1] > t_sum:
             fw.write(wr)
             wr = ''
-            wr = 'звонки с номера = %s \t' % tel[0]
-            wr += 'на номер = %s \t' % y[0]
-            wr += 'вызовов = %d \t \t мин = %d\n' % (y[1][0], y[1][1])
+            wr = '<tr><td> звонки с номера = %s </td>\n\t' % tel[0]
+            wr += '<td> на номер = %s </td>\n\t' % y[0]
+            wr += '<td> вызовов = %d \t \t мин = %d </td></tr>\n ' % (y[1][0], y[1][1])
             fw.write(wr)
             wr = ''
             count_loop += 1
+    wr += '</tr></table> \n'
+    fw.write(wr)
 
 viborka.write(err_t)
 
